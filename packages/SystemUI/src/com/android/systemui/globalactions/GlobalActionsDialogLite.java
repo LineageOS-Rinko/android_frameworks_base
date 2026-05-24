@@ -694,7 +694,7 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
     @VisibleForTesting
     protected String[] getRestartActions() {
         return mResources.getStringArray(
-                org.lineageos.platform.internal.R.array.config_restartActionsList);
+                org.rinko.platform.internal.R.array.config_restartActionsList);
     }
 
     @VisibleForTesting

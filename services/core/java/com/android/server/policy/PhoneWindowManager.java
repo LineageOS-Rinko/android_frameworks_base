@@ -2708,7 +2708,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 com.android.internal.R.string.config_searchKeyTargetActivity));
 
         mDeviceHardwareKeys = mContext.getResources().getInteger(
-                org.lineageos.platform.internal.R.integer.config_deviceHardwareKeys);
+                org.rinko.platform.internal.R.integer.config_deviceHardwareKeys);
         updateKeyAssignments();
 
         mTurnOffTvToastSuppressionDelay = mContext.getResources().getInteger(
@@ -2802,9 +2802,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         mSideFpsEventHandler = new SideFpsEventHandler(mContext, mHandler, mPowerManager);
 
         final String[] deviceKeyHandlerLibs = res.getStringArray(
-                org.lineageos.platform.internal.R.array.config_deviceKeyHandlerLibs);
+                org.rinko.platform.internal.R.array.config_deviceKeyHandlerLibs);
         final String[] deviceKeyHandlerClasses = res.getStringArray(
-                org.lineageos.platform.internal.R.array.config_deviceKeyHandlerClasses);
+                org.rinko.platform.internal.R.array.config_deviceKeyHandlerClasses);
 
         for (int i = 0;
                 i < deviceKeyHandlerLibs.length && i < deviceKeyHandlerClasses.length; i++) {
@@ -3282,14 +3282,14 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
         // Initialize all assignments to sane defaults.
         mBackLongPressAction = Action.fromIntSafe(res.getInteger(
-                org.lineageos.platform.internal.R.integer.config_longPressOnBackBehavior));
+                org.rinko.platform.internal.R.integer.config_longPressOnBackBehavior));
         mHomeLongPressAction = Action.fromIntSafe(res.getInteger(
-                org.lineageos.platform.internal.R.integer.config_longPressOnHomeBehavior));
+                org.rinko.platform.internal.R.integer.config_longPressOnHomeBehavior));
         mHomeDoubleTapAction = Action.fromIntSafe(res.getInteger(
-                org.lineageos.platform.internal.R.integer.config_doubleTapOnHomeBehavior));
+                org.rinko.platform.internal.R.integer.config_doubleTapOnHomeBehavior));
         mMenuPressAction = Action.MENU;
         mMenuLongPressAction = Action.fromIntSafe(res.getInteger(
-                org.lineageos.platform.internal.R.integer.config_longPressOnMenuBehavior));
+                org.rinko.platform.internal.R.integer.config_longPressOnMenuBehavior));
         if (mMenuLongPressAction == Action.NOTHING && (hasMenu && !hasAssist)) {
             mMenuLongPressAction = Action.SEARCH;
         }
@@ -3297,7 +3297,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         mAssistLongPressAction = Action.VOICE_SEARCH;
         mAppSwitchPressAction = Action.APP_SWITCH;
         mAppSwitchLongPressAction = Action.fromIntSafe(res.getInteger(
-                org.lineageos.platform.internal.R.integer.config_longPressOnAppSwitchBehavior));
+                org.rinko.platform.internal.R.integer.config_longPressOnAppSwitchBehavior));
         mEdgeLongSwipeAction = Action.NOTHING;
 
         mBackLongPressAction = Action.fromSettings(resolver,
@@ -3364,7 +3364,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         boolean updateKidsModeSettings = false;
         final boolean kidsModeEnabled;
         int mDeviceHardwareWakeKeys = mContext.getResources().getInteger(
-                org.lineageos.platform.internal.R.integer.config_deviceHardwareWakeKeys);
+                org.rinko.platform.internal.R.integer.config_deviceHardwareWakeKeys);
         synchronized (mLock) {
             mEndcallBehavior = Settings.System.getIntForUser(resolver,
                     Settings.System.END_BUTTON_BEHAVIOR,

@@ -3107,7 +3107,7 @@ public final class SystemServer implements Dumpable {
 
         // Lineage Services
         String externalServer = context.getResources().getString(
-                org.lineageos.platform.internal.R.string.config_externalSystemServer);
+                org.rinko.platform.internal.R.string.config_externalSystemServer);
         final Class<?> serverClazz;
         try {
             serverClazz = Class.forName(externalServer);

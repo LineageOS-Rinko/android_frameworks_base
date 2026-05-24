@@ -1313,10 +1313,10 @@ public final class PowerManagerService extends SystemService
                 .config_useAutoSuspend);
 
         mButtonBrightnessDefault = mContext.getResources().getFloat(
-                org.lineageos.platform.internal.R.dimen
+                org.rinko.platform.internal.R.dimen
                         .config_buttonBrightnessSettingDefaultFloat);
         mKeyboardBrightnessDefault = mContext.getResources().getFloat(
-                org.lineageos.platform.internal.R.dimen
+                org.rinko.platform.internal.R.dimen
                         .config_keyboardBrightnessSettingDefaultFloat);
 
         // Save brightness values:
@@ -1690,11 +1690,11 @@ public final class PowerManagerService extends SystemService
                 com.android.internal.R.bool.config_supportDoubleTapWake);
 
         mProximityWakeSupported = resources.getBoolean(
-                org.lineageos.platform.internal.R.bool.config_proximityCheckOnWake);
+                org.rinko.platform.internal.R.bool.config_proximityCheckOnWake);
         mProximityWakeEnabledByDefaultConfig = resources.getBoolean(
-                org.lineageos.platform.internal.R.bool.config_proximityCheckOnWakeEnabledByDefault);
+                org.rinko.platform.internal.R.bool.config_proximityCheckOnWakeEnabledByDefault);
         mProximityTimeOut = resources.getInteger(
-                org.lineageos.platform.internal.R.integer.config_proximityCheckTimeout);
+                org.rinko.platform.internal.R.integer.config_proximityCheckTimeout);
         if (mProximityWakeSupported) {
             mProximityWakeLock = mContext.getSystemService(PowerManager.class)
                     .newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "ProximityWakeLock");

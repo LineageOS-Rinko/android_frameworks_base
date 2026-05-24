@@ -156,7 +156,7 @@ final public class SettingsService extends Binder {
         int mResetMode = -1;
         boolean mMakeDefault;
         boolean mOverrideableByRestore;
-        boolean mUseLineageSettingsProvider;
+        boolean mUseRinkoSettingsProvider;
 
         MyShellCommand(SettingsProvider provider, boolean dumping) {
             mProvider = provider;
@@ -164,14 +164,14 @@ final public class SettingsService extends Binder {
         }
 
         private String getSettingsAuthority() {
-            return mUseLineageSettingsProvider ? LineageSettings.AUTHORITY : Settings.AUTHORITY;
+            return mUseRinkoSettingsProvider ? LineageSettings.AUTHORITY : Settings.AUTHORITY;
         }
 
         private String getCallMethod(String callMethod) {
             final PrintWriter perr = getErrPrintWriter();
 
             try {
-                Class clazz = mUseLineageSettingsProvider ? LineageSettings.class : Settings.class;
+                Class clazz = mUseRinkoSettingsProvider ? LineageSettings.class : Settings.class;
                 Field field = clazz.getField(callMethod);
                 if (field.getType() == String.class) {
                     return (String) field.get(null);
@@ -218,7 +218,7 @@ final public class SettingsService extends Binder {
                         throw new IllegalArgumentException("Bad deviceId number: " + arg);
                     }
                 } else if ("--lineage".equals(arg)) {
-                    mUseLineageSettingsProvider = true;
+                    mUseRinkoSettingsProvider = true;
                 } else if (mVerb == CommandVerb.UNSPECIFIED) {
                     if ("get".equalsIgnoreCase(arg)) {
                         mVerb = CommandVerb.GET;

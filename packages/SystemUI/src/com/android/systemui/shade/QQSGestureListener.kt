@@ -46,7 +46,7 @@ class QQSGestureListener @Inject constructor(
             override fun onChange(selfChange: Boolean) {
                 doubleTapToSleepEnabled = LineageSettings.System.getInt(
                         context.contentResolver, LineageSettings.System.DOUBLE_TAP_SLEEP_GESTURE,
-                        if (context.resources.getBoolean(org.lineageos.platform.internal.
+                        if (context.resources.getBoolean(org.rinko.platform.internal.
                                 R.bool.config_dt2sGestureEnabledByDefault)) 1 else 0) != 0
             }
         }

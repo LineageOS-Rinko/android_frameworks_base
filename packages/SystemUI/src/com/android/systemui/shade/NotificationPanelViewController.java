@@ -803,7 +803,7 @@ public final class NotificationPanelViewController implements
             public void onChange(boolean selfChange) {
                 mDoubleTapToSleepEnabled = LineageSettings.System.getInt(mContentResolver,
                         LineageSettings.System.DOUBLE_TAP_SLEEP_GESTURE,
-                        mResources.getBoolean(org.lineageos.platform.internal.R.bool.
+                        mResources.getBoolean(org.rinko.platform.internal.R.bool.
                                 config_dt2sGestureEnabledByDefault) ? 1 : 0) != 0;
             }
         };

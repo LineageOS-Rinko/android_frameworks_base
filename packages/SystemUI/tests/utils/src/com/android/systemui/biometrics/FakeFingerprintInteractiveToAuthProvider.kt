@@ -20,7 +20,7 @@ import android.content.Context
 import android.hardware.biometrics.common.AuthenticateReason
 import android.provider.Settings
 import kotlinx.coroutines.flow.MutableStateFlow
-import org.lineageos.platform.internal.R
+import org.rinko.platform.internal.R
 import org.mockito.Mockito
 
 class FakeFingerprintInteractiveToAuthProvider : FingerprintInteractiveToAuthProvider {
