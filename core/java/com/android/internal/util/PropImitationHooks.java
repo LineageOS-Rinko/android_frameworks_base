@@ -19,21 +19,19 @@
 package com.android.internal.util;
 
 import android.app.ActivityTaskManager;
+import android.app.ActivityThread;
 import android.app.Application;
 import android.app.TaskStackListener;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.res.Resources;
 import android.os.Build;
 import android.os.Binder;
-import android.os.Environment;
 import android.os.Process;
 import android.os.SystemProperties;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.android.internal.R;
 import com.android.internal.util.custom.KeyProviderManager;
 
 import org.json.JSONException;
@@ -63,9 +61,7 @@ public class PropImitationHooks {
     private static final Boolean sDisableGmsProps = SystemProperties.getBoolean(
             "persist.sys.pihooks.disable.gms_props", false);
 
-    private static final Boolean sDisableKeyAttestationBlock = SystemProperties.getBoolean(
-            "persist.sys.pihooks.disable.gms_key_attestation_block", false);
-    private static final String DATA_FILE = "gms_certified_props.json";
+    private static final String PIF_JSON_PATH = "/system_ext/etc/pif.json";
 
     private static final String PACKAGE_ARCORE = "com.google.ar.core";
     private static final String PACKAGE_FINSKY = "com.android.vending";
@@ -128,14 +124,8 @@ public class PropImitationHooks {
             return;
         }
 
-        final Resources res = context.getResources();
-        if (res == null) {
-            Log.e(TAG, "Null resources");
-            return;
-        }
-
-        sStockFp = res.getString(R.string.config_stockFingerprint);
-        sNetflixModel = res.getString(R.string.config_netflixSpoofModel);
+        sStockFp = getSecureString(context, Settings.Secure.STOCK_FINGERPRINT);
+        sNetflixModel = getSecureString(context, Settings.Secure.NETFLIX_SPOOF_MODEL);
 
         sProcessName = processName;
         sIsGms = packageName.equals(PACKAGE_GMS) && processName.equals(PROCESS_GMS_UNSTABLE);
@@ -195,28 +185,31 @@ public class PropImitationHooks {
             return;
         }
 
-        String savedProps = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.PIF_DATA);
-        if (savedProps == null || TextUtils.isEmpty(savedProps)) {
-            savedProps = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.FETCHED_PIF);
+        sCertifiedProps = new ArrayList<>();
+        String savedProps = getSecureString(context, Settings.Secure.PIF_DATA);
+        if (TextUtils.isEmpty(savedProps)) {
+            savedProps = readFromFile(new File(PIF_JSON_PATH));
+        }
+        if (TextUtils.isEmpty(savedProps)) {
+            savedProps = getSecureString(context, Settings.Secure.FETCHED_PIF);
         }
 
-        if (savedProps == null || TextUtils.isEmpty(savedProps)) {
-            dlog("Parsing props locally - fetched pif / user provided pif unavailable");
-            sCertifiedProps = Arrays.asList(context.getResources().getStringArray(R.array.config_certifiedBuildProperties));
+        if (TextUtils.isEmpty(savedProps)) {
+            dlog("Certified props unavailable");
         } else {
-            dlog("Parsing props fetched / provided by user");
+            dlog("Parsing configured certified props");
             try {
                 JSONObject parsedProps = new JSONObject(savedProps);
                 Iterator<String> keys = parsedProps.keys();
+                List<String> certifiedProps = new ArrayList<>();
                 while (keys.hasNext()) {
                     String key = keys.next();
                     String value = parsedProps.getString(key);
-                    sCertifiedProps.add(key + ":" + value);
+                    certifiedProps.add(key + ":" + value);
                 }
+                sCertifiedProps = certifiedProps;
             } catch (JSONException e) {
                 Log.e(TAG, "Error parsing JSON data", e);
-                dlog("Parsing props locally as fallback");
-                sCertifiedProps = Arrays.asList(context.getResources().getStringArray(R.array.config_certifiedBuildProperties));
             }
         }
 
@@ -265,20 +258,25 @@ public class PropImitationHooks {
     }
 
     private static String readFromFile(File file) {
-        StringBuilder content = new StringBuilder();
-
-        if (file.exists()) {
-            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-                String line;
-
-                while ((line = reader.readLine()) != null) {
-                    content.append(line);
-                }
-            } catch (IOException e) {
-                Log.e(TAG, "Error reading from file", e);
-            }
+        if (!file.exists()) {
+            return "";
         }
-        return content.toString();
+
+        StringBuilder content = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                content.append(line);
+            }
+        } catch (IOException e) {
+            Log.e(TAG, "Error reading " + file, e);
+        }
+        return content.toString().trim();
+    }
+
+    private static String getSecureString(Context context, String key) {
+        String value = Settings.Secure.getString(context.getContentResolver(), key);
+        return value == null ? "" : value.trim();
     }
 
     private static boolean isGmsAddAccountActivityOnTop() {
@@ -318,8 +316,8 @@ public class PropImitationHooks {
     }
 
     public static void onEngineGetCertificateChain() {
-        if (sDisableKeyAttestationBlock) {
-            dlog("Key attestation blocking is disabled by user");
+        if (!isKeyAttestationBlockingEnabled()) {
+            dlog("Key attestation blocking is disabled");
             return;
         }
 
@@ -333,6 +331,21 @@ public class PropImitationHooks {
         if (isCallerPlayIntegrity()) {
             dlog("Blocked key attestation for play integrity");
             throw new UnsupportedOperationException();
+        }
+    }
+
+    private static boolean isKeyAttestationBlockingEnabled() {
+        try {
+            Application application = ActivityThread.currentApplication();
+            if (application == null) {
+                dlog("No application context for key attestation blocking setting");
+                return false;
+            }
+            return Settings.Secure.getInt(application.getContentResolver(),
+                    Settings.Secure.KEY_ATTESTATION_BLOCKING, 0) == 1;
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to read key attestation blocking setting", e);
+            return false;
         }
     }
 

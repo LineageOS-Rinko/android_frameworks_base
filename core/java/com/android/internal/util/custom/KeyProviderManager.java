@@ -10,7 +10,6 @@ import android.provider.Settings;
 import android.util.Log;
 import android.util.Xml;
 
-import com.android.internal.R;
 import org.xmlpull.v1.XmlPullParser;
 
 import java.io.StringReader;
@@ -48,13 +47,14 @@ public final class KeyProviderManager {
             }
 
             if (!loadFromXmlSetting(context)) {
-                loadFromConfigArray(context);
+                Log.w(TAG, "No keybox configured in Settings");
             }
         }
 
         private boolean loadFromXmlSetting(Context ctx) {
             try {
-                String xml = Settings.Secure.getString(ctx.getContentResolver(), Settings.Secure.KEYBOX_DATA);
+                String xml = Settings.Secure.getString(
+                        ctx.getContentResolver(), Settings.Secure.KEYBOX_DATA);
                 if (xml == null || xml.trim().isEmpty()) return false;
 
                 XmlPullParser p = Xml.newPullParser();
@@ -113,7 +113,8 @@ public final class KeyProviderManager {
                                 if (currentAlg != null) {
                                     p.next();
                                     certCount++;
-                                    keyboxData.put(currentAlg + ".CERT_" + certCount, p.getText().trim());
+                                    keyboxData.put(currentAlg + ".CERT_" + certCount,
+                                            p.getText().trim());
                                 }
                                 break;
                             }
@@ -136,19 +137,6 @@ public final class KeyProviderManager {
             } catch (Exception e) {
                 Log.e(TAG, "XML keybox load failed", e);
                 return false;
-            }
-        }
-
-        private void loadFromConfigArray(Context ctx) {
-            for (String entry : ctx.getResources().getStringArray(R.array.config_certifiedKeybox)) {
-                String[] parts = entry.split(":", 2);
-                if (parts.length == 2) {
-                    keyboxData.put(parts[0], parts[1]);
-                }
-            }
-
-            if (!hasKeybox()) {
-                Log.w(TAG, "Incomplete keybox provided by overlays");
             }
         }
 

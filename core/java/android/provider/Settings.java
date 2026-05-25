@@ -13356,6 +13356,27 @@ public final class Settings {
         public static final String KEYBOX_DATA = "keybox_data";
 
         /**
+         * Stock build fingerprint to expose to ARCore.
+         * @hide
+         */
+        @Readable
+        public static final String STOCK_FINGERPRINT = "stock_fingerprint";
+
+        /**
+         * Device model to expose to Netflix.
+         * @hide
+         */
+        @Readable
+        public static final String NETFLIX_SPOOF_MODEL = "netflix_spoof_model";
+
+        /**
+         * Whether Play Integrity key attestation should be blocked.
+         * @hide
+         */
+        @Readable
+        public static final String KEY_ATTESTATION_BLOCKING = "key_attestation_blocking";
+
+        /**
          * Keys we no longer back up under the current schema, but want to continue to
          * process when restoring historical backup datasets.
          *
