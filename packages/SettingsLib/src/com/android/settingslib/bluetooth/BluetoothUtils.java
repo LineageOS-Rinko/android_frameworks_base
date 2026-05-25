@@ -298,7 +298,7 @@ public class BluetoothUtils {
                             .takePersistableUriPermission(
                                     iconUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 } catch (SecurityException e) {
-                    Log.e(TAG, "Failed to take persistable permission for: " + iconUri, e);
+                    Log.w(TAG, "Icon URI is readable without persistable permission: " + iconUri, e);
                 }
                 try {
                     final Bitmap bitmap =

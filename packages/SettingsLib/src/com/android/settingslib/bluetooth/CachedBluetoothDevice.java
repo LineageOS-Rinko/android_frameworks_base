@@ -853,9 +853,11 @@ public class CachedBluetoothDevice implements Comparable<CachedBluetoothDevice> 
                 Uri uri = BluetoothUtils.getUriMetaData(getDevice(),
                         BluetoothDevice.METADATA_MAIN_ICON);
                 if (uri != null && mDrawableCache.get(uri.toString()) == null) {
-                    mDrawableCache.put(uri.toString(),
-                            (BitmapDrawable) BluetoothUtils.getBtDrawableWithDescription(
-                                    mContext, this).first);
+                    Drawable drawable = BluetoothUtils.getBtDrawableWithDescription(
+                            mContext, this).first;
+                    if (drawable instanceof BitmapDrawable) {
+                        mDrawableCache.put(uri.toString(), (BitmapDrawable) drawable);
+                    }
                 }
             }
             return null;
