@@ -292,15 +292,13 @@ public class CameraConstrainedHighSpeedCaptureSessionImpl
     @Override
     public int setRepeatingRequest(CaptureRequest request, CaptureCallback listener,
             Handler handler) throws CameraAccessException {
-        throw new UnsupportedOperationException("Constrained high speed session doesn't support"
-                + " this method");
+        return setRepeatingBurst(createHighSpeedRequestList(request), listener, handler);
     }
 
     @Override
     public int setSingleRepeatingRequest(CaptureRequest request, Executor executor,
             CaptureCallback listener) throws CameraAccessException {
-        throw new UnsupportedOperationException("Constrained high speed session doesn't support"
-                + " this method");
+        return setRepeatingBurstRequests(createHighSpeedRequestList(request), executor, listener);
     }
 
     @Override

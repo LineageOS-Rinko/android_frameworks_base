@@ -958,8 +958,10 @@ public class CameraDeviceImpl extends CameraDevice
                 }
             }
 
+            // ASUS vendor stream config modes keep the public operation mode in the low byte.
             boolean isConstrainedHighSpeed =
-                    (operatingMode == ICameraDeviceUser.CONSTRAINED_HIGH_SPEED_MODE);
+                    ((operatingMode & 0xFF)
+                            == ICameraDeviceUser.CONSTRAINED_HIGH_SPEED_MODE);
             if (isConstrainedHighSpeed && inputConfig != null) {
                 throw new IllegalArgumentException("Constrained high speed session doesn't support"
                         + " input configuration yet.");

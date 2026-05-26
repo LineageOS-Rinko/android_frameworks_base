@@ -124,13 +124,24 @@ public class PropImitationHooks {
             return;
         }
 
-        sStockFp = getSecureString(context, Settings.Secure.STOCK_FINGERPRINT);
-        sNetflixModel = getSecureString(context, Settings.Secure.NETFLIX_SPOOF_MODEL);
-
         sProcessName = processName;
         sIsGms = packageName.equals(PACKAGE_GMS) && processName.equals(PROCESS_GMS_UNSTABLE);
         sIsFinsky = packageName.equals(PACKAGE_FINSKY);
         sIsPhotos = packageName.equals(PACKAGE_GPHOTOS);
+
+        if (!sIsGms && !sIsFinsky && !sIsPhotos
+                && !packageName.equals(PACKAGE_ARCORE)
+                && !packageName.equals(PACKAGE_NETFLIX)) {
+            return;
+        }
+
+        if (Process.isIsolated()) {
+            dlog("Not setting props in isolated process");
+            return;
+        }
+
+        sStockFp = getSecureString(context, Settings.Secure.STOCK_FINGERPRINT);
+        sNetflixModel = getSecureString(context, Settings.Secure.NETFLIX_SPOOF_MODEL);
 
         /* Set Certified Properties for GMSCore
          * Set Stock Fingerprint for ARCore
@@ -138,11 +149,7 @@ public class PropImitationHooks {
          * Set Pixel XL for Google Photos
          */
         if (sIsGms || sIsFinsky) {
-            if (!android.os.Process.isIsolated()) {
-                setPlayIntegrityProps(context);
-            } else {
-                dlog("Not setting Play Integrity props in isolated process");
-            }
+            setPlayIntegrityProps(context);
         } else if (!sStockFp.isEmpty() && packageName.equals(PACKAGE_ARCORE)) {
             dlog("Setting stock fingerprint for: " + packageName);
             setPropValue("FINGERPRINT", sStockFp);
