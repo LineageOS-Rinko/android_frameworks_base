@@ -69,6 +69,7 @@ public class PropImitationHooks {
     private static final String PROCESS_GMS_UNSTABLE = PACKAGE_GMS + ".unstable";
     private static final String PACKAGE_NETFLIX = "com.netflix.mediaclient";
     private static final String PACKAGE_GPHOTOS = "com.google.android.apps.photos";
+    private static final String PACKAGE_WALLET = "com.google.android.apps.walletnfcrel";
 
     private static final ComponentName GMS_ADD_ACCOUNT_ACTIVITY = ComponentName.unflattenFromString(
             "com.google.android.gms/.auth.uiflows.minutemaid.MinuteMaidActivity");
@@ -113,7 +114,7 @@ public class PropImitationHooks {
     private static volatile String sStockFp, sNetflixModel;
 
     private static volatile String sProcessName;
-    private static volatile boolean sIsGms, sIsFinsky, sIsPhotos;
+    private static volatile boolean sIsGms, sIsFinsky, sIsPhotos, sIsWallet;
 
     public static void setProps(Context context) {
         final String packageName = context.getPackageName();
@@ -128,6 +129,7 @@ public class PropImitationHooks {
         sIsGms = packageName.equals(PACKAGE_GMS) && processName.equals(PROCESS_GMS_UNSTABLE);
         sIsFinsky = packageName.equals(PACKAGE_FINSKY);
         sIsPhotos = packageName.equals(PACKAGE_GPHOTOS);
+        sIsWallet = packageName.equals(PACKAGE_WALLET);
 
         if (!sIsGms && !sIsFinsky && !sIsPhotos
                 && !packageName.equals(PACKAGE_ARCORE)
@@ -148,7 +150,7 @@ public class PropImitationHooks {
          * Set custom model for Netflix
          * Set Pixel XL for Google Photos
          */
-        if (sIsGms || sIsFinsky) {
+        if (sIsGms || sIsFinsky || sIsWallet) {
             setPlayIntegrityProps(context);
         } else if (!sStockFp.isEmpty() && packageName.equals(PACKAGE_ARCORE)) {
             dlog("Setting stock fingerprint for: " + packageName);
